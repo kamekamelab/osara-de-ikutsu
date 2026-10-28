@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>おさらで いくつ？</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="games.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="header">
+    <div class="brand">
+      <span class="brand-icon" aria-hidden="true">◒</span>
+      <h1>おさらで いくつ？</h1>
+    </div>
+    <div class="header-actions"><button id="game-menu" type="button" class="secondary" hidden>えらびなおす</button></div>
+  </header>
+  <main>
+    <section id="game-picker" class="game-picker" aria-labelledby="picker-heading">
+      <h2 id="picker-heading" tabindex="-1">えらぼう</h2>
+      <div id="game-cards" class="game-cards"></div>
+    </section>
+    <div id="lesson-workspace" class="workspace" hidden>
+    <section id="lesson" class="lesson" aria-label="おさらの教材">
+      <div class="lesson-head"><span id="mode-label" class="mode-label">あわせる</span><span id="food-label" class="food-label sr-only">りんごを かぞえよう</span></div>
+      <div id="session-progress" class="session-progress" role="img" aria-label="3もん">
+        <div id="session-stars" class="session-stars" aria-hidden="true"></div>
+        <span id="session-counter" aria-hidden="true">3もん</span>
+      </div>
+      <ol id="lesson-steps" class="lesson-steps sr-only" aria-label="あそびの ながれ">
+        <li data-step="1"><span aria-hidden="true">1</span> じゅんび</li>
+        <li data-step="2"><span aria-hidden="true">2</span> うごかす</li>
+        <li data-step="3"><span aria-hidden="true">3</span> かぞえる</li>
+      </ol>
+      <div class="message">
+        <h2 id="message" tabindex="-1">はじめよう</h2>
+        <p id="hint" class="sr-only">ものを タッチして、1つずつ あつめよう。</p>
+      </div>
+      <div id="preparation-panel" class="preparation-panel">
+        <div id="setup-art" class="setup-art" aria-hidden="true"></div>
+        <p id="setup-quantity" class="setup-quantity"></p>
+        <p id="setup-description" class="sr-only"></p>
+        <button id="change-settings" class="secondary" type="button">かずを かえる</button>
+      </div>
+      <p id="progress" class="progress sr-only" hidden></p>
+      <div id="completion-badge" class="completion-badge" aria-hidden="true" hidden>
+        <svg viewBox="0 0 160 160" fill="none"><path d="M47 109 36 151 61 140 77 154 84 111M113 109 124 151 99 140 83 154 76 111" fill="#245d4b" stroke="#173b30" stroke-width="3" stroke-linejoin="round"/><circle cx="80" cy="72" r="58" fill="#fff0bf" stroke="#b38728" stroke-width="4"/><circle cx="80" cy="72" r="48" stroke="#dfbd62" stroke-width="2"/><path d="m80 34 11 24 27 3-20 19 5 27-23-13-23 13 5-27-20-19 27-3Z" fill="#e6b53b" stroke="#98721f" stroke-width="3" stroke-linejoin="round"/></svg>
+      </div>
+      <div id="stage" class="stage" data-mode="add" data-phase="ready" role="img" aria-label="ひだりにりんご2個、みぎにりんご1個。">
+        <div class="plate-group source left" id="left-group" aria-hidden="true"><span class="plate-label sr-only" id="left-label">ひだりのおさら</span><div class="plate" id="left-plate"></div></div>
+        <div class="plate-group source right" id="right-group" aria-hidden="true"><span class="plate-label sr-only" id="right-label">みぎのおさら</span><div class="plate" id="right-plate"></div></div>
+        <div class="gather-arrow" aria-hidden="true">↓<span>↓</span></div>
+        <div class="plate-group result" id="result-group" aria-hidden="true"><span class="plate-label sr-only" id="result-label">おおきなおさら</span><div class="plate" id="result-plate"><span id="empty-mark" hidden>0</span></div></div>
+        <div class="plate-group taken" id="taken-group" aria-hidden="true" hidden><span class="plate-label sr-only" id="taken-label">とった もの</span><div class="tray" id="taken-tray"></div></div>
+        <div class="take-arrow" aria-hidden="true">→</div>
+        <div id="foods" aria-hidden="true"></div>
+      </div>
+      <div class="actions">
+        <button id="primary" class="primary" type="button">はじめる</button>
+        <div class="secondary-actions">
+          <button id="reset" class="secondary" type="button"><span aria-hidden="true">↺</span> やりなおし</button>
+          <button id="show-equation" class="secondary" type="button" aria-expanded="false" aria-controls="equation" disabled>しきをみる</button>
+        </div>
+        <p id="equation" class="equation" hidden></p>
+      </div>
+      <p id="announcement" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
+    </section>
+    <aside class="teacher" aria-label="教師用の設定">
+      <details id="teacher-settings">
+        <summary>せんせい <span class="summary-mark" aria-hidden="true">⌄</span></summary>
+        <div class="settings-body">
+          <fieldset><legend>うごかしかた</legend><div class="interaction-switch">
+            <button type="button" data-interaction="manual" aria-pressed="true">1つずつ タッチ</button>
+            <button type="button" data-interaction="auto" aria-pressed="false">先生の おてほん</button>
+          </div></fieldset>
+          <fieldset class="mode-field"><legend>やること</legend><div class="mode-switch">
+            <button type="button" data-mode="add" aria-pressed="true">あわせる</button>
+            <button type="button" data-mode="subtract" aria-pressed="false">へらす</button>
+          </div></fieldset>
+          <div id="add-settings">
+            <fieldset><legend id="left-legend">ひだりのおさら</legend><div class="choices" data-setting="left" data-max="3"></div></fieldset>
+            <fieldset><legend id="right-legend">みぎのおさら</legend><div class="choices" data-setting="right" data-max="3"></div></fieldset>
+          </div>
+          <div id="subtract-settings" hidden>
+            <fieldset><legend>はじめの かず</legend><div class="choices six" data-setting="total" data-max="6"></div></fieldset>
+            <fieldset><legend id="take-legend">とる かず</legend><div class="choices" data-setting="take" data-max="3"></div><p id="take-help" class="setting-help">はじめの数まで選べます。</p></fieldset>
+          </div>
+          <fieldset class="session-field"><legend>なんもん？</legend><div class="choices session-choices" data-setting="goal" data-values="3,5,10"></div></fieldset>
+          <label class="motion-option"><input id="reduced-motion" type="checkbox"><span>動き控えめ</span></label>
+          <details class="teacher-help"><summary>つかいかた</summary><div>
+            <p>数とあそびかたを選び、「はじめる」を押します。実物のサイコロで数を決めても遊べます。</p>
+            <p>物を1回タッチすると1つ動きます。つかんで移動・元へ戻すこともできます。移動後は、番号のない物を1つずつタッチして数えます。</p>
+            <p>先生のお手本ではまとめて動きます。設定を変えると準備に戻ります。</p>
+            <p>1問終わると星が1つ付きます。「つぎへ」で数の違う問題へ進み、決めた問題数でゴールになります。次の数は、あわせるは左右1〜3、へらすははじめ1〜6・とる数1〜3の範囲で変わります。設定を変えると星は最初からになります。</p>
+          </div></details>
+          <button id="recount" class="secondary" type="button" hidden>この もんだいを やりなおす</button>
+          <button id="settings-start" class="settings-start primary" type="button">はじめる</button>
+        </div>
+      </details>
+    </aside>
+    </div>
+  </main>
+  <footer><div class="footer-legal"><button id="license-open" class="license-link" type="button" aria-haspopup="dialog">Licenses</button></div></footer>
+  <dialog lang="en" id="license-dialog" aria-labelledby="license-title">
+    <div class="license-heading"><h2 id="license-title">Licenses</h2><button id="license-close" class="secondary" type="button" autofocus>Close</button></div>
+    <div class="license-content">
+      <section><h3>Application and original illustrations</h3><p>Terms for this app's original code and SVG illustrations have not been set. Permissions for redistribution or modification have not been determined. This notice does not grant any new permissions.</p><details class="original-notice"><summary>Original Japanese notice</summary><div lang="ja"><p>本アプリの独自コードとSVGイラストの利用条件は未設定です。再配布・改変などの許諾範囲は確定していません。この表示によって新たな利用許諾を付与するものではありません。</p></div></details></section>
+      <section><h3>Fonts and third-party materials</h3><p>BIZ UDPGothic Regular and Bold are bundled for the text and numbers on screen. No font installation is required.</p><p>The fonts are provided under the SIL Open Font License 1.1. The original font files, copyright notice and license are retained. These font terms are separate from the unset terms for the app and original illustrations.</p><details class="font-license"><summary>Read the font license (OFL 1.1)</summary><pre id="font-license-text">Copyright 2022 The BIZ UDGothic Project Authors (https://github.com/googlefonts/morisawa-biz-ud-mincho)
+
+This Font Software is licensed under the SIL Open Font License, Version 1.1.
+This license is copied below, and is also available with a FAQ at:
+https://scripts.sil.org/OFL
+
+
+-----------------------------------------------------------
+SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007
+-----------------------------------------------------------
+
+PREAMBLE
+The goals of the Open Font License (OFL) are to stimulate worldwide
+development of collaborative font projects, to support the font creation
+efforts of academic and linguistic communities, and to provide a free and
+open framework in which fonts may be shared and improved in partnership
+with others.
+
+The OFL allows the licensed fonts to be used, studied, modified and
+redistributed freely as long as they are not sold by themselves. The
+fonts, including any derivative works, can be bundled, embedded, 
+redistributed and/or sold with any software provided that any reserved
+names are not used by derivative works. The fonts and derivatives,
+however, cannot be released under any other type of license. The
+requirement for fonts to remain under this license does not apply
+to any document created using the fonts or their derivatives.
+
+DEFINITIONS
+"Font Software" refers to the set of files released by the Copyright
+Holder(s) under this license and clearly marked as such. This may
+include source files, build scripts and documentation.
+
+"Reserved Font Name" refers to any names specified as such after the
+copyright statement(s).
+
+"Original Version" refers to the collection of Font Software components as
+distributed by the Copyright Holder(s).
+
+"Modified Version" refers to any derivative made by adding to, deleting,
+or substituting -- in part or in whole -- any of the components of the
+Original Version, by changing formats or by porting the Font Software to a
+new environment.
+
+"Author" refers to any designer, engineer, programmer, technical
+writer or other person who contributed to the Font Software.
+
+PERMISSION &amp; CONDITIONS
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of the Font Software, to use, study, copy, merge, embed, modify,
+redistribute, and sell modified and unmodified copies of the Font
+Software, subject to the following conditions:
+
+1) Neither the Font Software nor any of its individual components,
+in Original or Modified Versions, may be sold by itself.
+
+2) Original or Modified Versions of the Font Software may be bundled,
+redistributed and/or sold with any software, provided that each copy
+contains the above copyright notice and this license. These can be
+included either as stand-alone text files, human-readable headers or
+in the appropriate machine-readable metadata fields within text or
+binary files as long as those fields can be easily viewed by the user.
+
+3) No Modified Version of the Font Software may use the Reserved Font
+Name(s) unless explicit written permission is granted by the corresponding
+Copyright Holder. This restriction only applies to the primary font name as
+presented to the users.
+
+4) The name(s) of the Copyright Holder(s) or the Author(s) of the Font
+Software shall not be used to promote, endorse or advertise any
+Modified Version, except to acknowledge the contribution(s) of the
+Copyright Holder(s) and the Author(s) or with their explicit written
+permission.
+
+5) The Font Software, modified or unmodified, in part or in whole,
+must be distributed entirely under this license, and must not be
+distributed under any other license. The requirement for fonts to
+remain under this license does not apply to any document created
+using the Font Software.
+
+TERMINATION
+This license becomes null and void if any of the above conditions are
+not met.
+
+DISCLAIMER
+THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT
+OF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL THE
+COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL
+DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
+OTHER DEALINGS IN THE FONT SOFTWARE.
+</pre></details><p>No third-party libraries, images or audio are bundled. The plates, food, animals, trains and balloons use original SVG illustrations made for this app.</p><details class="original-notice"><summary>Original Japanese notice</summary><div lang="ja"><p>画面の文字と数字には、同梱のBIZ UDPゴシック（通常・太字）を使用します。端末へのインストールは不要です。</p><p>この書体はSIL Open Font License 1.1に従って、元のフォントと著作権表示・利用条件を保持して同梱しています。本体や独自イラストの利用条件とは別です。</p><p>第三者ライブラリー・画像・音声は同梱していません。お皿・食べ物・動物・電車・風船などの絵は、このアプリ用の独自SVGです。</p></div></details></section>
+      <section><h3>Launch and verification tools</h3><p>The same-Wi-Fi launch script uses the installed Python 3 and its standard library. Python itself is not bundled.</p><p>Playwright and the verification browsers are not bundled with the app. Their own terms are provided with the installed versions.</p><details class="original-notice"><summary>Original Japanese notice</summary><div lang="ja"><p>同じWi-Fi用の起動スクリプトは、端末にインストール済みのPython 3とその標準ライブラリーを使用します。Python本体は同梱していません。</p><p>検証用のPlaywright・ブラウザーはアプリ本体には同梱していません。これらのツール自体の条件は、各インストール版に付属するライセンスに従います。</p></div></details></section>
+      <section><h3>User data</h3><p>This version does not register or save user photos, materials, personal information or lesson data.</p><details class="original-notice"><summary>Original Japanese notice</summary><div lang="ja"><p>現在の版には、利用者の写真・素材・個人情報・授業データを登録または保存する機能はありません。</p></div></details></section>
+    </div>
+  </dialog>
+</body>
+</html>

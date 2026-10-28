@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "files": {
+    "index.html": {
+      "bytes": 16048,
+      "sha256": "73d315c6df3200751131f6f578f02eace7cd79fc4c7368b49f6020e3ccdfecab"
+    },
+    "styles.css": {
+      "bytes": 24574,
+      "sha256": "798ac656656c28b9670f524a06fdf7528368a1dc8d0d488944e14ab1591e6e9b"
+    },
+    "app.js": {
+      "bytes": 35627,
+      "sha256": "276b1a4daad6fb6a80db237d541a2ac937c9ee64dfebcb57ae222198067c95fd"
+    },
+    "games.js": {
+      "bytes": 10078,
+      "sha256": "751fe052ebf572d5609349a3c86e43c5aea5b059e75a96550bce8fdb9b250178"
+    },
+    "fonts/BIZUDPGothic-Regular.ttf": {
+      "bytes": 4669688,
+      "sha256": "258d7156c165f2ff774b6efee637c22c3b950de0d8a10e501137061bc8085d01"
+    },
+    "fonts/BIZUDPGothic-Bold.ttf": {
+      "bytes": 4640596,
+      "sha256": "30eba52fc837e8b62c97d4b82e6706583149fb7294e3712dd71a655eaea80a90"
+    },
+    "fonts/OFL.txt": {
+      "bytes": 4408,
+      "sha256": "e753d7155d53c747d037a445e584c8ecfca6dd79846db610417e282a736b28bc"
+    },
+    "README.md": {
+      "bytes": 459,
+      "sha256": "dd247712d9e5cc0eecd2a01e6776a8a91e1202c398c662c95ed6abc5ae53fc31"
+    },
+    ".nojekyll": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}
